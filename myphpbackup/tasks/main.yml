@@ -1,0 +1,38 @@
+---
+- name: ensure dir exists
+  file:
+    path: "{{base_dir}}/{{ item }}"
+    state: directory
+  with_items:
+  - infra-myphpbackup
+  - infra-myphpbackup/web-app
+- name: copy myphpbackup data configuration file
+  copy:
+    src: /
+    dest: "{{base_dir}}/infra-myphpbackup"
+- name: copy to host and unzip tar file
+  unarchive:
+    copy: "no"
+    src: "{{base_dir}}/infra-myphpbackup/myphpbackup.zip"
+    dest: "{{base_dir}}/infra-myphpbackup/web-app"
+- name: change permission of global_conf.php
+  sudo: yes
+  command: "chmod 0777 {{base_dir}}/infra-myphpbackup/web-app/global_conf.php"
+- name: change permission of export dir 
+  sudo: yes
+  command: "chmod 0777 {{base_dir}}/infra-myphpbackup/web-app/export"
+- name: run lampp container
+  docker:
+    image: "docker-registry:5000/official/lampp"
+    name: infra-myphpbackup
+    hostname: infra-myphpbackup
+    docker_api_version: "{{docker_api_version}}"
+    dns:
+    - "{{dns_addr}}"
+    dns_search:
+    - "{{dns_search}}"
+    state: "reloaded"
+    volumes:
+    - "{{base_dir}}/infra-myphpbackup/web-app/:/var/www/html/"
+    ports:
+    - "8989:80"
