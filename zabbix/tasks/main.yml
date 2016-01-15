@@ -1,0 +1,108 @@
+---
+- name: ensure dir exists
+  file:
+    path: "{{base_dir}}/{{item}}"
+    state: directory
+  with_items:
+  - infra-zabbix-server/working-directory/conf
+  - infra-zabbix-server/working-directory/log
+  - infra-zabbix-db/working-directory/scripts
+  - infra-zabbix-web/working-directory/log
+  - infra-zabbix-web/working-directory/conf
+- name: copy mysql data file
+  copy:
+    src: data.sql
+    dest: "{{base_dir}}/infra-zabbix-db/working-directory/scripts/"
+- name: copy mysql images file
+  copy:
+    src: images.sql
+    dest: "{{base_dir}}/infra-zabbix-db/working-directory/scripts/"
+- name: copy mysql schema file
+  copy:
+    src: schema.sql
+    dest: "{{base_dir}}/infra-zabbix-db/working-directory/scripts/"
+- name: copy mysql schema file
+  copy:
+    src: import.sh
+    dest: "{{base_dir}}/infra-zabbix-db/working-directory/scripts/"
+- name: copy zabbix_server.conf file
+  copy:
+    src: zabbix_server.conf
+    dest: "{{base_dir}}/infra-zabbix-server/working-directory/conf/"
+- name: run mysql container
+  docker:
+    image: docker-registry:5000/official/mysql:5.5.42
+    name: infra-zabbix-db
+    hostname: infra-zabbix-db
+    ports:
+    - "3333:3306"
+    state: "running"
+    volumes:
+    - "{{base_dir}}/infra-zabbix-db/working-directory/mysql-data/:/var/lib/mysql"
+    - "{{base_dir}}/infra-zabbix-db/working-directory/scripts/:/home/"
+    env:
+      MYSQL_ROOT_PASSWORD: "mypassword"
+      MYSQL_USER: "zabbix"
+      MYSQL_PASSWORD: "zabbix"
+      MYSQL_DATABASE: "zabbix"
+- name: wait for mysql to startup
+  wait_for:
+    port: 3333
+    delay: 10 
+- command: "docker exec -it infra-zabbix-db bash /home/import.sh"
+- name: check mysql import is finished
+  wait_for:
+    port: 3333
+    delay: 30
+- command: "touch {{base_dir}}/infra-zabbix-server/working-directory/log/zabbix_server.log"
+- command: "chmod 777 {{base_dir}}/infra-zabbix-server/working-directory/log/zabbix_server.log"
+- name: run infra-zabbix-server container
+  docker:
+    image: zabbix/zabbix-server-2.4
+    name: infra-zabbix-server
+    hostname: infra-zabbix-server
+    ports:
+    - "10051:10051"
+    state: reloaded
+    docker_api_version: "{{docker_api_version}}"
+    dns:
+    - "{{dns_addr}}"
+    dns_search:
+    - "{{dns_search}}"
+    command: "/usr/sbin/zabbix_server -f -c /etc/zabbix/zabbix_server.conf"
+    volumes:
+    - "{{base_dir}}/infra-zabbix-server/working-directory/conf/:/etc/zabbix" 
+    - "{{base_dir}}/infra-zabbix-server/working-directory/log/:/var/log/zabbix"
+    links:
+    - infra-zabbix-db
+- name: copy zabbix.conf.php file
+  copy:
+    src: zabbix.conf.php
+    dest: "{{base_dir}}/infra-zabbix-web/working-directory/conf/"
+- name: copy maintenanc.inc.php file
+  copy:
+    src: maintenance.inc.php
+    dest: "{{base_dir}}/infra-zabbix-web/working-directory/conf/"
+- name: run infra-zabbix-web container
+  docker:
+    image: docker-registry:5000/samat/zabbix-web:latest
+    name: infra-zabbix-web
+    hostname: infra-zabbix-web
+    state: reloaded
+    docker_api_version: "{{docker_api_version}}"
+    dns:
+    - "{{dns_addr}}"
+    dns_search:
+    - "{{dns_search}}"ports:
+    - "8099:80"
+    volumes:
+    - "{{base_dir}}/infra-zabbix-web/working-directory/conf/:/etc/zabbix/web/"
+    command: "apachectl -DFOREGROUND"
+    links:
+    - infra-zabbix-db
+    - infra-zabbix-server
+- name: wait for mysql to startup
+  wait_for:
+    port: 3333
+    delay: 30
+- command: docker exec -it infra-zabbix-web setsebool httpd_can_connect_zabbix 1

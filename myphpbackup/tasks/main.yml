@@ -8,7 +8,7 @@
   - infra-myphpbackup/web-app
 - name: copy myphpbackup data configuration file
   copy:
-    src: /
+    src: src/
     dest: "{{base_dir}}/infra-myphpbackup"
 - name: copy to host and unzip tar file
   unarchive:
@@ -23,7 +23,7 @@
   command: "chmod 0777 {{base_dir}}/infra-myphpbackup/web-app/export"
 - name: run lampp container
   docker:
-    image: "docker-registry:5000/official/lampp"
+    image: "tutum/lamp"
     name: infra-myphpbackup
     hostname: infra-myphpbackup
     docker_api_version: "{{docker_api_version}}"
