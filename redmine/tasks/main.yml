@@ -1,0 +1,48 @@
+---
+- name: ensure directory exists
+  file:
+    path: "{{ base_dir }}/redmine/{{ item }}"
+    state: directory
+  with_items:
+  - data
+  - db
+- name: create redmine database container
+  docker:
+    name: redmine-mysql
+    docker_api_version: "{{docker_api_version}}"
+    hostname: redmine-mysql
+    image: docker-registry:5000/library/mysql:5.6.22
+    state: running
+    env:
+      MYSQL_ROOT_PASSWORD: salam
+      MYSQL_DATABASE: redmine
+    volumes:
+    - "{{ base_dir }}/redmine/db/:/var/lib/mysql"
+- name: create redmine container
+  docker:
+    name: redmine
+    docker_api_version: "{{docker_api_version}}"
+    dns:
+    - "{{dns_addr}}"
+    dns_search:
+    - "{{dns_search}}"
+    hostname: redmine
+    image: docker-registry:5000/official/sameersbn-redmine:3.0.3
+    state: reloaded
+    volumes:
+    - "{{ base_dir }}/redmine/data/:/home/redmine/data"
+    ports:
+    - "9093:80"
+    env:
+      DB_NAME: redmine
+      DB_USER: root
+      DB_PASS: salam
+      SMTP_ENABLED: "true"
+      SMTP_DOMAIN: "infra-integ"
+      SMTP_HOST: "infra-integ"
+      SMTP_PORT: 10025
+      SMTP_OPENSSL_VERIFY_MODE: "none"
+      SMTP_METHOD: "smtp"
+    links:
+    - "redmine-mysql:mysql"
+  notify: reload nginx config

@@ -1,0 +1,230 @@
+version: 1
+
+dn: dc=dev,dc=samatco,dc=ir
+objectClass: organization
+objectClass: dcObject
+objectClass: top
+dc: dev
+o: nodomain
+
+dn: cn=admin,dc=dev,dc=samatco,dc=ir
+objectClass: organizationalRole
+objectClass: simpleSecurityObject
+cn: admin
+userPassword:: e1NTSEF9U1hIZjgzOE9nZGVqbFBJTit0b25vZ3VLdjZCcmM5ajc=
+description: LDAP administrator
+
+dn: ou=people,dc=dev,dc=samatco,dc=ir
+objectClass: organizationalUnit
+objectClass: top
+ou: people
+
+dn: uid=m.zarezadeh,ou=people,dc=dev,dc=samatco,dc=ir
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: meysam
+sn: Zarezadeh
+displayName: Meysam Zarezadeh
+givenName: Meysam
+mail: zarezadeh@gmail.com
+uid: m.zarezadeh
+userPassword:: e1NTSEF9cVpYN1pNTklscVJoWjU0aGVkMU53K2RMTGxMVTk3WUVYTXZKTXc9P
+ Q==
+
+dn: uid=b.aghili,ou=people,dc=dev,dc=samatco,dc=ir
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: bamdad
+sn: Aghili
+displayName: Bamdad Aghili
+givenName: Bamdad
+mail: bamdad.ag@gmail.com
+uid: b.aghili
+userPassword:: e1NTSEF9anlrQ1k0YTF6MFZ5ZUJHLzFKWm9NNWI5WjRqVlQ3YjRyK2JGaWc9P
+ Q==
+
+dn: uid=s.vaez,ou=people,dc=dev,dc=samatco,dc=ir
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: siavash
+sn: Vaez
+displayName: Siavash Vaez Afshar
+givenName: Siavash
+mail: siavash.v.afshar@gmail.com
+uid: s.vaez
+userPassword:: e3NoYX1mRXFOQ2NvM1lxOWg1WlVnbEQzQ1pKVDRsQnM9
+
+dn: uid=j.rostami,ou=people,dc=dev,dc=samatco,dc=ir
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: jalil
+sn: Rostami
+displayName: Jalil Rostami
+givenName: Jalil
+mail: j.rostami.6@gmail.com
+uid: j.rostami
+userPassword:: e1NTSEF9anlrQ1k0YTF6MFZ5ZUJHLzFKWm9NNWI5WjRqVlQ3YjRyK2JGaWc9P
+ Q==
+
+dn: uid=a.ghasemi,ou=people,dc=dev,dc=samatco,dc=ir
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: alireza
+sn: Ghasemi
+displayName: Alireza Ghasemi
+givenName: Alireza
+mail: a.r.ghassemy@gmail.com
+uid: a.ghasemi
+userPassword:: e1NTSEF9anlrQ1k0YTF6MFZ5ZUJHLzFKWm9NNWI5WjRqVlQ3YjRyK2JGaWc9P
+ Q==
+
+dn: uid=r.keshmir,ou=people,dc=dev,dc=samatco,dc=ir
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: reza
+sn: Keshmir
+displayName: Reza Keshmir
+givenName: Reza
+mail: rezacashmere@gmail.com
+uid: r.keshmir
+userPassword:: e1NTSEF9anlrQ1k0YTF6MFZ5ZUJHLzFKWm9NNWI5WjRqVlQ3YjRyK2JGaWc9P
+ Q==
+
+dn: uid=b.mehrabi,ou=people,dc=dev,dc=samatco,dc=ir
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: babak
+sn: Mehrabi
+displayName: Babak Mehrabi
+givenName: Babak
+mail: s.babak.mehrabi@gmail.com
+uid: b.mehrabi
+userPassword:: e1NTSEF9anlrQ1k0YTF6MFZ5ZUJHLzFKWm9NNWI5WjRqVlQ3YjRyK2JGaWc9P
+ Q==
+
+dn: uid=a.mohammadi,ou=people,dc=dev,dc=samatco,dc=ir
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: alan
+sn: Mohammadi
+displayName: Alan Modammadi
+givenName: Alan
+mail: dante21cne@gmail.com
+uid: a.mohammadi
+userPassword:: e1NTSEF9anlrQ1k0YTF6MFZ5ZUJHLzFKWm9NNWI5WjRqVlQ3YjRyK2JGaWc9P
+ Q==
+
+dn: uid=s.hajizadeh,ou=people,dc=dev,dc=samatco,dc=ir
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: saeed
+sn: Hajizadeh
+displayName: Saeed Hajizadeh
+givenName: Saeed
+mail: s.hajizadeh@gmail.com
+uid: s.hajizadeh
+userPassword:: e1NTSEF9b1MweUNGWlA4MFdQSHdvQXNnSHQwbXF3Sjk1Zk8vYkpsZzNCWWc9P
+ Q==
+
+dn: uid=f.gharaei,ou=people,dc=dev,dc=samatco,dc=ir
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: fatemeh
+sn: Gharaeimanesh
+displayName: Fatemeh Gharaeimanesh
+givenName: Fatemeh
+mail: gharaeemanesh@gmail.com
+uid: f.gharaei
+userPassword:: e1NTSEF9UWxuN3hYRzJUZUxVSmh4dXBycnVOd21qcVhaaWlBcFF0eGtKNEE9P
+ Q==
+
+dn: uid=m.rahbari,ou=people,dc=dev,dc=samatco,dc=ir
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: Mohammad
+sn: Rahbari
+displayName: Mohammad Rahbari
+givenName: Mohammad
+mail: mh.rahbari90@gmail.com
+uid: m.rahbari
+userPassword:: e1NTSEF9cSszVm93MDJkeWJOS1JaSXZVNEF4cEtFWVh5cGFaOWlKbzMzVnc9P
+ Q==
+
+dn: uid=m.hosseinzadeh,ou=people,dc=dev,dc=samatco,dc=ir
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: Mojtaba
+sn: HosseinZadeh
+displayName: Mojtaba Hosseinzadeh
+givenName: Mojtaba
+mail: hosseinzadeh.mojtaba@gmail.com
+uid: m.hosseinzadeh
+userPassword:: e1NTSEF9SXNRMTdtQmY2T0o0UHJrL3NZbGdkaGl4SC8yTW52Sy9ZSHc5ZEE9P
+ Q==
+
+dn: uid=a.assar,ou=people,dc=dev,dc=samatco,dc=ir
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: Amir
+sn: Assarzadeh
+displayName: Amir Assarzadeh
+givenName: Amir
+mail: assarzadeh@gmail.com
+uid: a.assar
+userPassword:: e1NTSEF9bUcwRTgxQlV2SmdlNitoTWk5dUhUYW92REtGMVZXV0xVNDBxa3c9P
+ Q==
+
+dn: uid=a.hosseininia,ou=people,dc=dev,dc=samatco,dc=ir
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: Ali
+sn: Hosseininia
+displayName: Ali Hosseininia
+givenName: Ali
+mail: a.hosseininia@samatco.iri
+uid: a.hosseininia
+userPassword:: e1NTSEF9bUcwRTgxQlV2SmdlNitoTWk5dUhUYW92REtGMVZXV0xVNDBxa3c9P
+ Q==
+
+dn: uid=e.chellemal,ou=people,dc=dev,dc=samatco,dc=ir
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: Ebrahim
+sn: Chellemal
+displayName: Ebrahim Chellemal
+givenName: Ebrahim
+mail: e.chellemal@samatco.iri
+uid: e.chellemal
+userPassword:: e1NTSEF9bUcwRTgxQlV2SmdlNitoTWk5dUhUYW92REtGMVZXV0xVNDBxa3c9P
+ Q==
+

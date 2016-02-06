@@ -1,0 +1,32 @@
+---
+- name: ensure directory exists
+  file:
+    path: "{{ base_dir }}/nginx/www"
+    state: directory
+- name: Sync nginx conf
+  copy:
+    src: conf/
+    dest: "{{base_dir}}/nginx/conf/"
+  register: sync_conf
+- name: run nginx.mehriz-server container
+  docker:
+    image: docker-registry:5000/library/nginx:1.7.10.1
+    name: nginx.mehriz-server
+    docker_api_version: "{{docker_api_version}}"
+    dns:
+    - "{{dns_addr}}"
+    dns_search:
+    - "{{dns_search}}"
+    hostname: nginx.mehriz-server
+    ports: "80:80"
+    state: "{{ 'restarted' if sync_conf.changed else 'reloaded' }}"
+    env:
+      ARTIFACT_ID: "{{artifact_id}}"
+    volumes:
+    - "{{base_dir}}/nginx/conf:/etc/nginx/conf.d"
+    - "{{base_dir}}/nginx/www:/var/www"
+- name: copy and extract static site data
+  unarchive:
+    copy: yes
+    src: homepage.tar.gz
+    dest: "{{ base_dir }}/nginx/www"

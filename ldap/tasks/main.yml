@@ -1,0 +1,107 @@
+---
+### should add a backup plan from currently running ldap container
+#- name: export data from main ldap container
+#  docker:
+#    image: docker-registry:5000/muzili/ldap
+#    name: ldap.mehriz-server
+#    state: present
+#    docker_api_version: "{{docker_api_version}}"
+#    dns:
+#    - "{{dns_addr}}"
+#    command: " slapcat > data.ldif"
+- name: remove previous ldap data
+  sudo: "yes"
+  file:
+    path: "{{base_dir}}/ldap"
+    force: "yes"
+    state: absent
+- name: ensure directory exists
+  file:
+    path: "{{ base_dir }}/ldap"
+    state: directory
+- name: copy ldap data configuration file
+  copy:
+    src: conf/
+    dest: "{{base_dir}}/ldap/import/conf"
+- name: kill previous main ldap container
+  docker:
+    image: docker-registry:5000/muzili/ldap
+    name: ldap.mehriz-server
+    docker_api_version: "{{docker_api_version}}"
+    state: absent
+- name: run temporary ldap container
+  docker:
+    image: docker-registry:5000/muzili/ldap
+    name: temporary-ldap
+    docker_api_version: "{{docker_api_version}}"
+    hostname: temporary-ldap
+    dns:
+    - "{{dns_addr}}"
+    dns_search:
+    - "{{dns_search}}"
+    state: restarted
+    ports: 10389:389
+    env:
+      SLAPD_PASSWORD: salam1@3
+      SLAPD_DOMAIN: dev.samatco.ir
+- name: ldap data copy container
+  docker:
+    image: docker-registry:5000/library/ubuntu:latest
+    name: copy_agent
+    docker_api_version: "{{docker_api_version}}"
+    state: started
+    volumes:
+    - /backup
+    volumes_from:
+    - temporary-ldap
+    command: tar cvf /backup/backup.tar  /var/lib/ldap  /etc/ldap
+- name: copy compressed data from copy_agent
+  command: /usr/bin/docker cp copy_agent:/backup/backup.tar "{{base_dir}}/ldap/import"
+- name: extract ldap configuration data
+  unarchive:
+    copy: "no"
+    src: "{{base_dir}}/ldap/import/backup.tar"
+    dest: "{{base_dir}}/ldap"
+- name: kill temporary ldap container
+  docker:
+    image: docker-registry:5000/muzili/ldap
+    name: temporary-ldap
+    docker_api_version: "{{docker_api_version}}"
+    state: absent
+- name: run main ldap container
+  docker:
+    image: docker-registry:5000/muzili/ldap
+    name: ldap.mehriz-server
+    docker_api_version: "{{docker_api_version}}"
+    hostname: ldap.mehriz-server
+    dns:
+    - "{{dns_addr}}"
+    dns_search:
+    - "{{dns_search}}"
+    state: running
+    ports: 10389:389
+    env: 
+      SLAPD_PASSWORD: salam1@3
+      SLAPD_DOMAIN: dev.samatco.ir
+    volumes:
+    - "{{base_dir}}/ldap/etc/ldap:/etc/ldap"
+    - "{{base_dir}}/ldap/var/lib/ldap:/var/lib/ldap"
+- name: wait for container to start
+  wait_for:
+    port: 10389
+    delay: 5
+- name: run ldap-importer container
+  docker:
+    image: docker-registry:5000/muzili/ldap
+    name: ldap-importer
+    hostname: ldap-importer
+    docker_api_version: "{{docker_api_version}}"
+    dns: 
+    - "{{dns_addr}}"
+    state: started
+    volumes:
+    - "{{base_dir}}/ldap/import/conf:/etc/ldap/conf"
+    command: "ldapadd -h ldap.mehriz-server -c -x -D \"cn=admin,dc=dev,dc=samatco,dc=ir\" -w salam1@3 -f /etc/ldap/conf/data.ldif"
+    links:
+    - "ldap.mehriz-server"
+

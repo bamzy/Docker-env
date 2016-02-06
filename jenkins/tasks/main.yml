@@ -1,0 +1,49 @@
+---
+- name: ensure directory exists
+  file:
+    path: "{{ base_dir }}/{{ item }}"
+    state: directory
+  with_items:
+  - slave1
+  - ansible-slave
+  - jenkins
+- name: run slave1.mehriz-server container
+  docker:
+    image: docker-registry:5000/samat/jenkins-slave-builder:1.3
+    name: slave1.mehriz-server
+    hostname: slave1.mehriz-server
+    docker_api_version: "{{docker_api_version}}"
+    dns: 
+    - "{{dns_addr}}"
+    dns_search: 
+    - "{{dns_search}}"
+    state: reloaded
+    volumes:
+    - "{{base_dir}}/slave1:/home/samat"
+- name: run ansible-slave.mehriz-server container
+  docker:
+    image: docker-registry:5000/samat/jenkins-ansible-slave:1.9.1
+    name: ansible-slave.mehriz-server
+    hostname: ansible-slave.mehriz-server
+    docker_api_version: "{{docker_api_version}}"
+    dns:
+    - "{{dns_addr}}"
+    dns_search:
+    - "{{dns_search}}"
+    state: reloaded
+    volumes:
+    - "{{base_dir}}/ansible-slave:/home/samat"
+- name: run jenkins.mehriz-server container
+  docker:
+    image: docker-registry:5000/library/jenkins:1.596
+    name: jenkins.mehriz-server
+    hostname: jenkins.mehriz-server
+    docker_api_version: "{{docker_api_version}}"
+    dns: 
+    - "{{dns_addr}}"
+    dns_search: 
+    - "{{dns_search}}"
+    state: reloaded
+    ports: 9090:8080
+    volumes:
+    - "{{base_dir}}/jenkins:/var/jenkins_home"

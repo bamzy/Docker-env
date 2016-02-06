@@ -1,0 +1,15 @@
+---
+- name: run phantomjs container
+  docker:
+    image: docker-registry:5000/phantomjs:latest
+    name: phantomjs
+    hostname: phantomjs
+    docker_api_version: "{{docker_api_version}}"
+    dns:
+    - "{{dns_addr}}"
+    dns_search:
+    - "{{dns_search}}"
+    ports: 8643:8643
+    links:
+    - nginx-phantom.mehriz-server:web
+    command: "phantomjs --webdriver=8643"

@@ -1,0 +1,6 @@
+---
+project_name: infra-integ
+artifact_name: "{{ project_name }}-{{ artifact_version }}-dist"
+project_dir: "{{ base_dir }}/{{ project_name }}"
+working_dir: "{{ project_dir }}/working-dir"
+download_base_url: "http://samat-server.devsamat.ir:8080/nexus/content/repositories/releases/ir/samatco/infra/{{ project_name }}"

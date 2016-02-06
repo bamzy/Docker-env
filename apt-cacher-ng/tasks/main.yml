@@ -1,0 +1,23 @@
+---
+- name: ensure directory exists
+  file:
+    path: "{{ base_dir }}/apt-cacher-ng/{{ item }}"
+    state: directory
+  with_items:
+  - data
+  - log
+- name: create apt-cacher-ng container
+  docker:
+    image: docker-registry:5000/samat/apt-cacher-ng:1.0
+    name: infra-apt-cacher-ng
+    docker_api_version: "{{docker_api_version}}"
+    dns:
+    - "{{dns_addr}}"
+    dns_search:
+    - "{{dns_search}}"
+    hostname: infra-apt-cacher-ng
+    ports:
+    - "3142:3142"
+    volumes:
+    - "{{ base_dir }}/apt-cacher-ng/data:/var/cache/apt-cacher-ng"
+      #    - "{{ base_dir }}/apt-cacher-ng/log:/var/log/apt-cacher-ng"

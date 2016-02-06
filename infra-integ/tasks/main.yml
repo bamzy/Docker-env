@@ -1,0 +1,32 @@
+---
+- name: ensure dir exists
+  file:
+    path: "{{ project_dir }}"
+    state: directory
+- name: get artifact file from nexus
+  get_url:
+    url: "{{ download_base_url }}/{{ artifact_version }}/{{ artifact_name }}.tar"
+    dest: "{{ base_dir}}"
+- name: copy to host and unzip tar file
+  unarchive:
+    copy: "no"
+    src: "{{ base_dir }}/{{ artifact_name }}.tar"
+    dest: "{{ project_dir }}"
+- name: ensure working dir exists
+  file:
+    path: "{{ working_dir }}"
+    state: directory
+- command: "rm -rf {{ working_dir }}/*"
+- command: "cp -a {{ project_dir }}/{{ artifact_name }}/. {{ working_dir }}/"
+
+- name: "run java contaniner"
+  docker:
+    image: docker-registry:5000/java7-oracle:1.4
+    name: "{{ project_name }}"
+    hostname: "{{ project_name }}"
+    state: reloaded
+    env:
+      SPRING_PROFILES_ACTIVE: "production"
+    command: "/data/bin/{{ project_name }}"
+    volumes:
+        - "{{ working_dir }}/:/data"

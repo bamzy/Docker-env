@@ -1,0 +1,13 @@
+---
+- name: run scm.mehriz-server container
+  docker:
+    image: docker-registry:5000/samat/scm-manager:1.45
+    name: scm.mehriz-server
+    hostname: scm.mehriz-server
+    dns: "{{dns_addr}}"
+    ports: 9091:8080
+    state: running
+    volumes: 
+    - "{{base_dir}}/scm/data:/var/lib/scm"
+    links:
+    - ldap.mehriz-server
